@@ -4,7 +4,7 @@
 
   function NoiseGenFactory(context, stereo, bufSize){
     bufSize = bufSize || 4096;
-    var node = context.createJavaScriptNode(bufSize, 1, 2);
+    var node = context.createScriptProcessor(bufSize, 1, 2);
     node.onaudioprocess = function(e){
       var outBufferL = e.outputBuffer.getChannelData(0);
       var outBufferR = e.outputBuffer.getChannelData(1);
@@ -48,7 +48,7 @@
   }
 
   function EnvelopeFactory(context, a, d, s, r){
-    var gain = context.createGainNode();
+    var gain = context.createGain();
     EnvelopeNode.call(gain, a, d, s, r);
     return gain;
   }
@@ -57,7 +57,7 @@
 
   function FeedbackDelayNode(context, delay, feedback){
     this.delayTime.value = delay;
-    this.gainNode = context.createGainNode();
+    this.gainNode = context.createGain();
     this.gainNode.gain.value = feedback;
     this.connect(this.gainNode);
     this.gainNode.connect(this);
@@ -99,8 +99,8 @@
   function Drum(context){
     var osc = this.osc = context.createOscillator();
     osc.frequency.value = 45;
-    osc.type = osc.SINE;
-    var env = this.env = context.createEnvelope(0.001, 0.1, 0, 0.5);
+      osc.type = 'sine';
+      var env = this.env = context.createEnvelope(0.001, 0.1, 0, 0.5);
     osc.connect(env);
   }
 
@@ -114,7 +114,7 @@
   function HiHat(context){
     this.noiseGen = context.createNoiseGen();
     this.filter = context.createBiquadFilter();
-    this.filter.type = this.filter.HIGHPASS;
+      this.filter.type = "highpass";
     this.filter.frequency.value = 5000;
     this.noiseGen.connect(this.filter);
     this.env = context.createEnvelope(0.001, 0.05, 0, 0.2);
